@@ -1,64 +1,68 @@
 import React from 'react';
+import { Control, Controller } from 'react-hook-form';
 import { TextField, InputAdornment } from '@mui/material';
-import { useForm } from 'react-hook-form';
 
 interface FormInputProps {
-    name: string;
-    label: string;
-    required?: boolean;
-    register: ReturnType<typeof useForm>['register'];
-    error?: boolean;
-    helperText?: string;
-    type?: string;
-    icon?: React.ElementType; 
-    validationRule?: {
-      pattern?: {
-        value: string;
-        message: string;
-      };
+  name: string;
+  label: string;
+  required?: boolean;
+  control: Control<any>; 
+  error?: boolean;
+  helperText?: string;
+  type?: string;
+  icon?: React.ElementType; 
+  validationRule?: {
+    pattern?: {
+      value: string;
+      message: string;
     };
-  }
+  };
+}
   
-  const FormInput: React.FC<FormInputProps> = ({
-    name,
-    label,
-    required = false,
-    register,
-    error,
-    helperText,
-    type = 'text',
-    icon: Icon,
-    validationRule,
-  }) => {
-    const registrationOptions = {
-      ...(required && { required: `${label} is required` }),
-      ...(validationRule?.pattern && { // Conditionally include pattern if it exists
-        pattern: {
+ const FormInput: React.FC<FormInputProps> = ({
+  name,
+  label,
+  required = false,
+  control,
+  error,
+  helperText,
+  type = 'text',
+  icon: Icon,
+  validationRule,
+}) => {
+  return (
+    <Controller
+      name={name}
+      control={control}
+      rules={{
+        required: required ? `${label} is required` : undefined,
+        pattern: validationRule?.pattern ? {
           value: new RegExp(validationRule.pattern.value),
           message: validationRule.pattern.message,
-        },
-      }),
-    };
-  
-    return (
-      <TextField
-        label={label}
-        variant="outlined"
-        type={type}
-        fullWidth
-        error={error}
-        helperText={helperText}
-        InputProps={{
-          startAdornment: Icon ? (
-            <InputAdornment position="start">
-              <Icon />
-            </InputAdornment>
-          ) : null,
-        }}
-        {...register(name, registrationOptions)}
-      />
-    );
-  };
+        } : undefined,
+      }}
+      render={({ field }) => (
+        <TextField
+          {...field}
+          label={label}
+          variant="outlined"
+          fullWidth
+          type={type}
+          error={error}
+          helperText={helperText}
+          InputProps={{
+            startAdornment: Icon ? (
+              <InputAdornment position="start">
+                <Icon />
+              </InputAdornment>
+            ) : null,
+          }}
+        />
+      )}
+    />
+  );
+};
+
   
   
 

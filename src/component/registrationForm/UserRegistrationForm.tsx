@@ -26,8 +26,9 @@ interface IUserFormData {
   [key: string]: any; 
 }
 
+
 const UserRegistrationForm: React.FC<IUserFormProps> = ({ userData, onNext }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<IUserFormData>();
+  const { control, handleSubmit, formState: { errors } } = useForm<IUserFormData>();
 
   const onSubmit: SubmitHandler<IUserFormData> = data => {
     onNext(data);
@@ -35,16 +36,16 @@ const UserRegistrationForm: React.FC<IUserFormProps> = ({ userData, onNext }) =>
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box width="600px">
+      <Box mt={2}>
         <Grid container spacing={2}>
           {userData.map((input, index) => (
             <Grid item xs={12} sm={6} key={index}>
               <FormInput
+                control={control}
                 name={input.name}
                 label={input.label}
                 required={input.required}
                 type={input.type}
-                register={register}
                 error={Boolean(errors[input.name])}
                 helperText={errors[input.name]?.message as string}
                 icon={input.icon}
@@ -62,4 +63,3 @@ const UserRegistrationForm: React.FC<IUserFormProps> = ({ userData, onNext }) =>
 };
 
 export default UserRegistrationForm;
-
